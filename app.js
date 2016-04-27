@@ -25,7 +25,7 @@ app.get('/', function(req, res){
     res.render('index');
 });
 
-app.post('/api/shorten/:link', function(req, res){
+app.get('/api/shorten/:link', function(req, res){
   var longUrl = req.params.link;
   var shortUrl = '';
 
