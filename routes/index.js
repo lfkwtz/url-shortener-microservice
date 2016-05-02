@@ -3,6 +3,7 @@ var router = express.Router();
 var mongodb = require('mongodb');
 
 var shortid = require('shortid');
+//removes underscores and dashes from possible characterlist
 shortid.characters('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$@');
 
 var validUrl = require('valid-url');
@@ -26,9 +27,14 @@ router.get('/new/:url(*)', function(req, res, next) {
       var collection = db.collection('urls');
       var url = req.params.url;
       
+      //sets current hostname to var local
       var local = req.get('host');
       
       var newLink = function(db, callback) {
+            collection.findOne( { "url": url }, {short: 1, _id: 0}, function(err, doc) {
+            if (doc != null) {
+              res.json({original_url: url, short_url: local+'/'+doc.short});
+            } else {
             if (validUrl.isUri(url)){
               var short = shortid.generate();
               var newUrl = {url: url, short: short};
@@ -37,6 +43,8 @@ router.get('/new/:url(*)', function(req, res, next) {
             } else {
               res.json({error: "Wrong url format, make sure you have a valid protocol and real site."});
             };
+            };
+            });
         };
       
       newLink(db, function() {
