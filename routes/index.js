@@ -12,7 +12,7 @@ router.get('/', function(req, res, next) {
   res.render('index');
 });
 
-router.get('/:entry(*)', function(req, res, next) {
+router.get('/new/:url(*)', function(req, res, next) {
   var MongoClient = mongodb.MongoClient
 
   var url = 'mongodb://localhost:27017/url2'
@@ -24,23 +24,49 @@ router.get('/:entry(*)', function(req, res, next) {
       console.log("Connected to server")
       
       var collection = db.collection('urls');
-      var entry = req.params.entry;
+      var url = req.params.url;
       
       var local = req.get('host');
       
-      var findLink = function(db, callback) {
-      collection.findOne( { "short": entry }, {url: 1, _id: 0}, function(err, doc) {
-      if (doc != null) {
-        res.redirect(doc.url);
-          } else {
-            if (validUrl.isUri(entry)){
+      var newLink = function(db, callback) {
+            if (validUrl.isUri(url)){
               var short = shortid.generate();
-              var newUrl = {url: entry, short: short};
+              var newUrl = {url: url, short: short};
               collection.insert([newUrl]);
-              res.json({original_url: entry, short_url: local+'/'+short});
+              res.json({original_url: url, short_url: local+'/'+short});
             } else {
               res.json({error: "Wrong url format, make sure you have a valid protocol and real site."});
             };
+        };
+      
+      newLink(db, function() {
+        db.close();
+      });
+
+    };
+  });
+});
+
+router.get('/:short', function(req, res, next) {
+  var MongoClient = mongodb.MongoClient
+
+  var url = 'mongodb://localhost:27017/url2'
+
+  MongoClient.connect(url, function(err, db){
+    if (err){
+      console.log("Unable to connect to server", err);
+    } else {
+      console.log("Connected to server")
+      
+      var collection = db.collection('urls');
+      var short = req.params.short;
+            
+      var findLink = function(db, callback) {
+      collection.findOne( { "short": short }, {url: 1, _id: 0}, function(err, doc) {
+      if (doc != null) {
+        res.redirect(doc.url);
+          } else {
+            res.json({error: "No corresponding shortlink found in the database."});
           };
         });
       };
