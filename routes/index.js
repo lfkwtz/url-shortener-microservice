@@ -3,6 +3,9 @@ var router = express.Router();
 var mongodb = require('mongodb');
 
 var shortid = require('shortid');
+shortid.characters('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$@');
+
+var validUrl = require('valid-url');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -32,10 +35,14 @@ router.get('/:entry(*)', function(req, res, next) {
       res.redirect(doc.url);
         } else {
           console.log('URL NOT FOUND! NEW ENTRY!');
-          var short = shortid.generate();
-          var newUrl = {url: entry, short: short};
-          collection.insert([newUrl]);
-          res.json({original_url: entry, short_url: local+'/'+short});
+          if (validUrl.isUri(entry)){
+            var short = shortid.generate();
+            var newUrl = {url: entry, short: short};
+            collection.insert([newUrl]);
+            res.json({original_url: entry, short_url: local+'/'+short});
+          } else {
+            res.json({error: "Wrong url format, make sure you have a valid protocol and real site."});
+          };
         };
       });
     };
