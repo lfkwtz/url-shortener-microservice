@@ -59,22 +59,19 @@ router.get('/:entry', function(req, res, next) {
     var entry = req.params.entry;
     
     var findLink = function(db, callback) {
-      var cursor = collection.find( { "short": entry } );
-      cursor.each(function(err, doc) {
-          assert.equal(err, null);
-          if (doc != null) {
-            var redirect = collection.find( { "short": entry }, {url: 1, _id: 0} );
-            console.log(redirect);
-            //res.redirect('http://google.com');
-          } else {
-            callback();
-          }
+    collection.findOne( { "short": entry }, {url: 1, _id: 0}, function(err, doc) {
+    if (doc != null) {
+      console.log('URL Found!!');
+      res.redirect("http://"+doc.url);
+        } else {
+          console.log('URL NOT FOUND! NEW ENTRY!');
+        };
       });
     };
     
     findLink(db, function() {
       db.close();
-  });
+    });
     
     
     
