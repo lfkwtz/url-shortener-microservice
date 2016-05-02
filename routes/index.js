@@ -23,36 +23,32 @@ router.get('/:entry(*)', function(req, res, next) {
     } else {
       console.log("Connected to server")
       
-    var collection = db.collection('urls');
-    var entry = req.params.entry;
-    
-    var local = req.get('host');
-    
-    var findLink = function(db, callback) {
-    collection.findOne( { "short": entry }, {url: 1, _id: 0}, function(err, doc) {
-    if (doc != null) {
-      console.log('URL Found!');
-      res.redirect(doc.url);
-        } else {
-          console.log('URL NOT FOUND! NEW ENTRY!');
-          if (validUrl.isUri(entry)){
-            var short = shortid.generate();
-            var newUrl = {url: entry, short: short};
-            collection.insert([newUrl]);
-            res.json({original_url: entry, short_url: local+'/'+short});
+      var collection = db.collection('urls');
+      var entry = req.params.entry;
+      
+      var local = req.get('host');
+      
+      var findLink = function(db, callback) {
+      collection.findOne( { "short": entry }, {url: 1, _id: 0}, function(err, doc) {
+      if (doc != null) {
+        res.redirect(doc.url);
           } else {
-            res.json({error: "Wrong url format, make sure you have a valid protocol and real site."});
+            if (validUrl.isUri(entry)){
+              var short = shortid.generate();
+              var newUrl = {url: entry, short: short};
+              collection.insert([newUrl]);
+              res.json({original_url: entry, short_url: local+'/'+short});
+            } else {
+              res.json({error: "Wrong url format, make sure you have a valid protocol and real site."});
+            };
           };
-        };
+        });
+      };
+      
+      findLink(db, function() {
+        db.close();
       });
-    };
-    
-    findLink(db, function() {
-      db.close();
-    });
-    
-    
-    
+
     };
   });
 });
