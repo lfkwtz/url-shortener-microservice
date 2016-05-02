@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  h3= title
+    form#form_add_url(name="newUrl", method="post",
+    action="/newurl")
+      span Name
+      span &nbsp;
+      input#input_name(type="text", placeholder="url", name="url")
+      br
+      br
+      button#submit_url(type="submit") submit

@@ -1,91 +1,62 @@
-
-'use strict'
-
-// require and instantiate express
 var express = require('express');
+var path = require('path');
+var favicon = require('serve-favicon');
+var logger = require('morgan');
+var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
+
+var mongo = require('mongodb');
+
+var routes = require('./routes/index');
+var users = require('./routes/users');
+
 var app = express();
 
-// require and instantiate mongoose
-var mongoose = require('mongoose');
-
-var config = require('./config');
-var base = require('./base.js');
-
-// use Url model
-var Url = require('./models/url');
-
-// connect to mongo database
- mongoose.connect('mongodb://' + config.db.host + '/' + config.db.name, function(err) {
-   if (err) {
-     throw new Error('Database failed to connect!');
-   } else {
-     console.log('Successfully connected to MongoDB on port 27017.');
-   };
- });
-
-//set jade to view engine and set view folder
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
-app.set('views', __dirname + '/templates');
 
-// serve index.html to root
-app.get('/', function(req, res){
-    res.render('index');
+// uncomment after placing your favicon in /public
+//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.use('/', routes);
+app.use('/users', users);
+
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  var err = new Error('Not Found');
+  err.status = 404;
+  next(err);
 });
 
-app.get('/shorten/:link', function(req, res){
-  var longUrl = req.params.link;
-  var shortUrl = '';
+// error handlers
 
-  // check if url already exists in database
-  Url.findOne({long_url: longUrl}, function (err, doc){
-    if (doc){
-      // base58 encode the unique _id of that document and construct the short URL
-      shortUrl = config.webhost + base.encode(doc._id);
+// development error handler
+// will print stacktrace
+if (app.get('env') === 'development') {
+  app.use(function(err, req, res, next) {
+    res.status(err.status || 500);
+    res.render('error', {
+      message: err.message,
+      error: err
+    });
+  });
+}
 
-      // since the document exists, we return it without creating a new entry
-      res.json({ 'short_url': shortUrl });
-    } else {
-      // The long URL was not found in the long_url field in our urls
-      // collection, so we need to create a new entry:
-      var newUrl = Url({
-        long_url: longUrl
-      });
-
-      // save the new link
-      newUrl.save(function(err) {
-        if (err){
-          console.log(err);
-        }
-
-        // construct the short URL
-        shortUrl = config.webhost + base.encode(newUrl._id);
-
-        res.json({ 'short_url': shortUrl });
-      });
-    }
-
+// production error handler
+// no stacktraces leaked to user
+app.use(function(err, req, res, next) {
+  res.status(err.status || 500);
+  res.render('error', {
+    message: err.message,
+    error: {}
   });
 });
 
- app.get('/:encoded_id', function(req, res){
-   var baseId = req.params.encoded_id;
-   var id = base.decode(baseId);
 
-   // check if url already exists in database
-   Url.findOne({_id: id}, function (err, doc){
-     if (doc) {
-       // found an entry in the DB, redirect the user to their destination
-       res.redirect(doc.long_url);
-     } else {
-       // nothing found -- go home
-       res.redirect(config.webhost);
-     }
-   });
- });
-
-
-
-var port = process.env.PORT || 3000;
-var server = app.listen(port, function() {
-   console.log('Sever listening on port ' + port);
-});
+module.exports = app;
