@@ -1,8 +1,10 @@
 var express = require('express');
 var router = express.Router();
+
 var mongodb = require('mongodb');
 var config = require('../config');
 var mLab = 'mongodb://' + config.db.host + '/' + config.db.name;
+var MongoClient = mongodb.MongoClient
 
 var shortid = require('shortid');
 //removes underscores and dashes from possible characterlist
@@ -16,7 +18,6 @@ router.get('/', function (req, res, next) {
 });
 
 router.get('/new/:url(*)', function (req, res, next) {
-  var MongoClient = mongodb.MongoClient
 
   MongoClient.connect(mLab, function (err, db) {
     if (err) {
@@ -56,7 +57,6 @@ router.get('/new/:url(*)', function (req, res, next) {
 });
 
 router.get('/:short', function (req, res, next) {
-  var MongoClient = mongodb.MongoClient
 
   MongoClient.connect(mLab, function (err, db) {
     if (err) {
