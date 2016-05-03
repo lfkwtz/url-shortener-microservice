@@ -14,7 +14,8 @@ var validUrl = require('valid-url');
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-  res.render('index');
+  var host = req.get('host');
+  res.render('index', {host: host });
 });
 
 router.get('/new/:url(*)', function (req, res, next) {
