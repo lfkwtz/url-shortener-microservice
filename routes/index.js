@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var mongodb = require('mongodb');
+var config = require('../config');
+var mLab = 'mongodb://' + config.db.host + '/' + config.db.name;
 
 var shortid = require('shortid');
 //removes underscores and dashes from possible characterlist
@@ -15,10 +17,8 @@ router.get('/', function(req, res, next) {
 
 router.get('/new/:url(*)', function(req, res, next) {
   var MongoClient = mongodb.MongoClient
-
-  var url = 'mongodb://localhost:27017/url2'
-
-  MongoClient.connect(url, function(err, db){
+  
+  MongoClient.connect(mLab, function(err, db){
     if (err){
       console.log("Unable to connect to server", err);
     } else {
@@ -58,9 +58,7 @@ router.get('/new/:url(*)', function(req, res, next) {
 router.get('/:short', function(req, res, next) {
   var MongoClient = mongodb.MongoClient
 
-  var url = 'mongodb://localhost:27017/url2'
-
-  MongoClient.connect(url, function(err, db){
+  MongoClient.connect(mLab, function(err, db){
     if (err){
       console.log("Unable to connect to server", err);
     } else {
