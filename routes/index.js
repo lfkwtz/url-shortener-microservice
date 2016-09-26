@@ -2,8 +2,8 @@ var express = require('express');
 var router = express.Router();
 
 var mongodb = require('mongodb');
-var config = require('../config');
-var mLab = 'mongodb://' + config.db.host + '/' + config.db.name;
+//var config = require('../config'); --- testing the use of heroku config variables
+var mLab = 'mongodb://' + dbHost + '/' + dbName;
 var MongoClient = mongodb.MongoClient
 
 var shortid = require('shortid');
