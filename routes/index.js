@@ -1,91 +1,110 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
-var mongodb = require('mongodb');
-//var config = require('../config'); --- testing the use of heroku config variables
-var mLab = 'mongodb://' + process.env.dbHost + '/' + process.env.dbName;
-var MongoClient = mongodb.MongoClient
+const mongodb = require('mongodb');
+const mLab = 'mongodb://' + process.env.dbHost + '/' + process.env.dbName;
+const MongoClient = mongodb.MongoClient
 
-var shortid = require('shortid');
+const shortid = require('shortid');
 // removes underscores and dashes from possible characterlist
 shortid.characters('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$@');
 
-var validUrl = require('valid-url');
+const validUrl = require('valid-url');
 
 /* GET home page. */
-router.get('/', function (req, res, next) {
-  var local = req.get('host');
-  res.render('index', {host: local });
+router.get('/', (req, res, next) => {
+    res.render('index', {
+        host: req.get('host')
+    });
 });
 
-router.get('/new/:url(*)', function (req, res, next) {
-  MongoClient.connect(mLab, function (err, db) {
-    if (err) {
-      console.log("Unable to connect to server", err);
-    } else {
-      console.log("Connected to server")
+router.get('/new/:url(*)', (req, res, next) => {
+    MongoClient.connect(mLab, (err, db) => {
+        if (err) {
+            console.log('Unable to connect to server', err);
+        } else {
+            console.log('Connected to server')
 
-      var collection = db.collection('links');
-      var params = req.params.url;
+            let collection = db.collection('links');
+            let params = req.params.url;
 
-      //sets current hostname to var local
-      var local = req.get('host') + "/";
-
-      var newLink = function (db, callback) {
-        collection.findOne({ "url": params }, { short: 1, _id: 0 }, function (err, doc) {
-          if (doc != null) {
-            res.json({ original_url: params, short_url: local + doc.short });
-          } else {
-            if (validUrl.isUri(params)) {
-              // if URL is valid, do this
-              var shortCode = shortid.generate();
-              var newUrl = { url: params, short: shortCode };
-              collection.insert([newUrl]);
-              res.json({ original_url: params, short_url: local + shortCode });
-            } else {
-            // if URL is invalid, do this
-              res.json({ error: "Wrong url format, make sure you have a valid protocol and real site." });
+            let newLink = function(db, callback) {
+                collection.findOne({
+                    'url': params
+                }, {
+                    short: 1,
+                    _id: 0
+                }, (err, doc) => {
+                    if (doc) {
+                        console.log(req);
+                        res.json({
+                            original_url: params,
+                            short_url: `${req.get('host')}/${doc.short}`
+                        });
+                    } else {
+                        if (validUrl.isUri(params)) {
+                            // if URL is valid, do this
+                            let shortCode = shortid.generate();
+                            let newUrl = {
+                                url: params,
+                                short: shortCode
+                            };
+                            collection.insert([newUrl]);
+                            res.json({
+                                original_url: params,
+                                short_url: `${req.get('host')}/${shortCode}`
+                            });
+                        } else {
+                            // if URL is invalid, do this
+                            res.json({
+                                error: 'Wrong url format, make sure you have a valid protocol and real site.'
+                            });
+                        };
+                    };
+                });
             };
-          };
-        });
-      };
 
-      newLink(db, function () {
-        db.close();
-      });
+            newLink(db, () => {
+                db.close();
+            });
 
-    };
-  });
+        };
+    });
 
 });
 
-router.get('/:short', function (req, res, next) {
+router.get('/:short', (req, res, next) => {
 
-  MongoClient.connect(mLab, function (err, db) {
-    if (err) {
-      console.log("Unable to connect to server", err);
-    } else {
-      console.log("Connected to server")
+    MongoClient.connect(mLab, (err, db) => {
+        if (err) {
+            console.log('Unable to connect to server', err);
+        } else {
+            console.log('Connected to server')
 
-      var collection = db.collection('links');
-      var params = req.params.short;
+            let collection = db.collection('links');
+            let params = req.params.short;
 
-      var findLink = function (db, callback) {
-        collection.findOne({ "short": params }, { url: 1, _id: 0 }, function (err, doc) {
-          if (doc != null) {
-            res.redirect(doc.url);
-          } else {
-            res.json({ error: "No corresponding shortlink found in the database." });
-          };
-        });
-      };
+            let findLink = function(db, callback) {
+                collection.findOne({
+                    'short': params
+                }, {
+                    url: 1,
+                    _id: 0
+                }, (err, doc) => {
+                    doc ?
+                        res.redirect(doc.url) :
+                        res.json({
+                            error: 'No corresponding shortlink found in the database.'
+                        })
+                });
+            };
 
-      findLink(db, function () {
-        db.close();
-      });
+            findLink(db, () => {
+                db.close();
+            });
 
-    };
-  });
+        };
+    });
 });
 
 module.exports = router;
