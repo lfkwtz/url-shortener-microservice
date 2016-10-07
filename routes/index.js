@@ -13,6 +13,7 @@ router.get('/', (req, res, next) => {
 
 router.get('/new/:url(*)', (req, res, next) => {
     let url = req.params.url;
+    let host = req.get('host');
     // check if exists, if it does - return document
     Link.findOne({
         url
@@ -20,11 +21,10 @@ router.get('/new/:url(*)', (req, res, next) => {
         if (found) {
           let obj = {
                 original_url: found.url,
-                short_url: `${req.get('host')}/${found.short}`
+                short_url: `${host}/${found.short}`
                 }
             res.status(200).json(obj);
         } else {
-            console.log('not found')
             helper.urlCheck(url, function(valid) {
                 if (valid) {
                     let createLink = new Link({
@@ -34,8 +34,8 @@ router.get('/new/:url(*)', (req, res, next) => {
                         .then(newDoc => {
                           let obj = {
                                 original_url: newDoc.url,
-                                short_url: `${req.get('host')}/${newDoc.short}`
-                                }
+                                short_url: `${host}/${newDoc.short}`
+                              };
                             res.status(200).json(obj);
                         });
                 } else {
@@ -49,10 +49,9 @@ router.get('/new/:url(*)', (req, res, next) => {
 });
 
 router.get('/:short', (req, res, next) => {
-    let shorty = req.params.short;
-    Link.findOne({}).then(link => {
-        if (link) {
-            res.status(200).send(link);
+    Link.findOne({ short: req.params.short }).then(found => {
+        if (found) {
+            res.redirect(found.url);
         } else {
             res.json({
                 error: 'No corresponding shortlink found in the database.'
