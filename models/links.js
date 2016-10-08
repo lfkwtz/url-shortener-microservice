@@ -1,3 +1,5 @@
+'use strict';
+
 const mongoose = require('mongoose');
 const shortid = require('shortid');
 // removes underscores and dashes from possible characterlist
