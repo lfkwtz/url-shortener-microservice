@@ -1,5 +1,3 @@
-'use strict';
-
 const express = require('express');
 const router = express.Router();
 const config = require('../config')
@@ -27,7 +25,7 @@ router.get('/new/:url(*)', (req, res, next) => {
                 }
             res.status(200).json(obj);
         } else {
-            helper.urlCheck(url, function(valid) {
+            helper.urlCheck(url, valid => {
                 if (valid) {
                     let createLink = new Link({
                         url

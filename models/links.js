@@ -1,5 +1,3 @@
-'use strict';
-
 const mongoose = require('mongoose');
 const shortid = require('shortid');
 // removes underscores and dashes from possible characterlist
@@ -13,7 +11,7 @@ const urlSchema = new Schema({
   created_at: { type: Date, default: Date.now }
 });
 
-urlSchema.pre('save', function(next) {
+urlSchema.pre('save', next => {
   this.short = shortid.generate();
   next(this)
 });
