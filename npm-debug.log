@@ -1,0 +1,44 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/local/bin/node', '/usr/local/bin/npm', 'shrinkwrap' ]
+2 info using npm@3.10.8
+3 info using node@v7.0.0
+4 info lifecycle url-shortener-microservice@1.1.0~preshrinkwrap: url-shortener-microservice@1.1.0
+5 silly lifecycle url-shortener-microservice@1.1.0~preshrinkwrap: no script for preshrinkwrap, continuing
+6 warn shrinkwrap Excluding devDependency: /dotenv
+7 info lifecycle url-shortener-microservice@1.1.0~shrinkwrap: url-shortener-microservice@1.1.0
+8 silly lifecycle url-shortener-microservice@1.1.0~shrinkwrap: no script for shrinkwrap, continuing
+9 verbose stack Error: Problems were encountered
+9 verbose stack Please correct and try again.
+9 verbose stack extraneous: body-parser@1.13.3 /Users/michaellefkowitz/Code/projects/url-shortener-microservice/node_modules/body-parser
+9 verbose stack extraneous: bytes@2.1.0 /Users/michaellefkowitz/Code/projects/url-shortener-microservice/node_modules/bytes
+9 verbose stack extraneous: depd@1.0.1 /Users/michaellefkowitz/Code/projects/url-shortener-microservice/node_modules/depd
+9 verbose stack extraneous: iconv-lite@0.4.11 /Users/michaellefkowitz/Code/projects/url-shortener-microservice/node_modules/iconv-lite
+9 verbose stack extraneous: raw-body@2.1.7 /Users/michaellefkowitz/Code/projects/url-shortener-microservice/node_modules/raw-body
+9 verbose stack extraneous: bytes@2.4.0 /Users/michaellefkowitz/Code/projects/url-shortener-microservice/node_modules/raw-body/node_modules/bytes
+9 verbose stack extraneous: iconv-lite@0.4.13 /Users/michaellefkowitz/Code/projects/url-shortener-microservice/node_modules/raw-body/node_modules/iconv-lite
+9 verbose stack     at shrinkwrap_ (/usr/local/lib/node_modules/npm/lib/shrinkwrap.js:129:15)
+9 verbose stack     at Array.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/slide/lib/bind-actor.js:15:8)
+9 verbose stack     at LOOP (/usr/local/lib/node_modules/npm/node_modules/slide/lib/chain.js:15:14)
+9 verbose stack     at /usr/local/lib/node_modules/npm/node_modules/slide/lib/chain.js:18:7
+9 verbose stack     at done (/usr/local/lib/node_modules/npm/lib/utils/lifecycle.js:132:5)
+9 verbose stack     at LOOP (/usr/local/lib/node_modules/npm/node_modules/slide/lib/chain.js:7:26)
+9 verbose stack     at /usr/local/lib/node_modules/npm/node_modules/slide/lib/chain.js:18:7
+9 verbose stack     at /usr/local/lib/node_modules/npm/lib/utils/lifecycle.js:294:20
+9 verbose stack     at FSReqWrap.oncomplete (fs.js:111:15)
+10 verbose cwd /Users/michaellefkowitz/Code/projects/url-shortener-microservice
+11 error Darwin 16.1.0
+12 error argv "/usr/local/bin/node" "/usr/local/bin/npm" "shrinkwrap"
+13 error node v7.0.0
+14 error npm  v3.10.8
+15 error Problems were encountered
+15 error Please correct and try again.
+15 error extraneous: body-parser@1.13.3 /Users/michaellefkowitz/Code/projects/url-shortener-microservice/node_modules/body-parser
+15 error extraneous: bytes@2.1.0 /Users/michaellefkowitz/Code/projects/url-shortener-microservice/node_modules/bytes
+15 error extraneous: depd@1.0.1 /Users/michaellefkowitz/Code/projects/url-shortener-microservice/node_modules/depd
+15 error extraneous: iconv-lite@0.4.11 /Users/michaellefkowitz/Code/projects/url-shortener-microservice/node_modules/iconv-lite
+15 error extraneous: raw-body@2.1.7 /Users/michaellefkowitz/Code/projects/url-shortener-microservice/node_modules/raw-body
+15 error extraneous: bytes@2.4.0 /Users/michaellefkowitz/Code/projects/url-shortener-microservice/node_modules/raw-body/node_modules/bytes
+15 error extraneous: iconv-lite@0.4.13 /Users/michaellefkowitz/Code/projects/url-shortener-microservice/node_modules/raw-body/node_modules/iconv-lite
+16 error If you need help, you may report this error at:
+16 error     <https://github.com/npm/npm/issues>
+17 verbose exit [ 1, true ]

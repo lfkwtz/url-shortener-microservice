@@ -1,6 +1,6 @@
 {
   "name": "url-shortener-microservice",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "engines": {
     "node": "6.6.0"
   },
@@ -9,12 +9,14 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
-    "body-parser": "~1.13.2",
-    "express": "~4.13.1",
+    "express": "~4.14.0",
     "mongoose": "^4.6.3",
     "pug": "^2.0.0-beta6",
     "serve-favicon": "~2.3.0",
     "shortid": "^2.2.6",
     "valid-url": "^1.0.9"
+  },
+  "devDependencies": {
+    "dotenv": "^2.0.0"
   }
 }

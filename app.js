@@ -1,7 +1,10 @@
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+ }
+
 const express = require('express');
 const path = require('path');
 const favicon = require('serve-favicon');
-const bodyParser = require('body-parser');
 
 const routes = require('./routes/index');
 
@@ -13,8 +16,6 @@ app.set('view engine', 'pug');
 
 // uncomment after placing your favicon in /public
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
@@ -33,7 +34,7 @@ app.use((req, res, next) => {
 if (app.get('env') === 'development') {
   app.use((err, req, res, next) => {
     res.status(err.status || 500);
-    res.render('error', {
+    res.send({
       message: err.message,
       error: err
     });
@@ -44,9 +45,9 @@ if (app.get('env') === 'development') {
 // no stacktraces leaked to user
 app.use((err, req, res, next) => {
   res.status(err.status || 500);
-  res.render('error', {
+  res.send({
     message: err.message,
-    error: {}
+    error: err
   });
 });
 

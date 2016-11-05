@@ -1,5 +1,5 @@
-const connection = `mongodb://${process.env.dbHost}/${process.env.dbName}`;
+const connection = `mongodb://${process.env.DB_HOST}/${process.env.DB_NAME}`;
 const mongoose = require('mongoose');
-const db = mongoose.connect(connection);
+mongoose.Promise = global.Promise;
 
-module.exports = db;
+exports.db = mongoose.connect(connection);
